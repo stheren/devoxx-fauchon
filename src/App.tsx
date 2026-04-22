@@ -1,104 +1,97 @@
-import { useRef, useState } from 'react';
-import { IRefPhaserGame, PhaserGame } from './PhaserGame';
-import { MainMenu } from './game/scenes/MainMenu';
+import { useState } from 'react';
+import { PhaserGame } from './PhaserGame';
 
 function App()
 {
-    // The sprite can only be moved in the MainMenu Scene
-    const [canMoveSprite, setCanMoveSprite] = useState(true);
+    const [activeSceneKey, setActiveSceneKey] = useState('TitleScene');
 
-    //  References to the PhaserGame component (game and scene are exposed)
-    const phaserRef = useRef<IRefPhaserGame | null>(null);
-    const [spritePosition, setSpritePosition] = useState({ x: 0, y: 0 });
-
-    const changeScene = () => {
-
-        if(phaserRef.current)
-        {     
-            const scene = phaserRef.current.scene as MainMenu;
-            
-            if (scene)
-            {
-                scene.changeScene();
-            }
-        }
-    }
-
-    const moveSprite = () => {
-
-        if(phaserRef.current)
-        {
-
-            const scene = phaserRef.current.scene as MainMenu;
-
-            if (scene && scene.scene.key === 'MainMenu')
-            {
-                // Get the update logo position
-                scene.moveLogo(({ x, y }) => {
-
-                    setSpritePosition({ x, y });
-
-                });
-            }
-        }
-
-    }
-
-    const addSprite = () => {
-
-        if (phaserRef.current)
-        {
-            const scene = phaserRef.current.scene;
-
-            if (scene)
-            {
-                // Add more stars
-                const x = Phaser.Math.Between(64, scene.scale.width - 64);
-                const y = Phaser.Math.Between(64, scene.scale.height - 64);
-    
-                //  `add.sprite` is a Phaser GameObjectFactory method and it returns a Sprite Game Object instance
-                const star = scene.add.sprite(x, y, 'star');
-    
-                //  ... which you can then act upon. Here we create a Phaser Tween to fade the star sprite in and out.
-                //  You could, of course, do this from within the Phaser Scene code, but this is just an example
-                //  showing that Phaser objects and systems can be acted upon from outside of Phaser itself.
-                scene.add.tween({
-                    targets: star,
-                    duration: 500 + Math.random() * 1000,
-                    alpha: 0,
-                    yoyo: true,
-                    repeat: -1
-                });
-            }
-        }
-    }
-
-    // Event emitted from the PhaserGame component
-    const currentScene = (scene: Phaser.Scene) => {
-
-        setCanMoveSprite(scene.scene.key !== 'MainMenu');
-        
-    }
+    const sceneLabel = ({
+        TitleScene: 'Accueil',
+        HarvestScene: 'Journee',
+        ShopScene: 'Boutique'
+    } as Record<string, string>)[activeSceneKey] ?? 'Jeu';
 
     return (
         <div id="app">
-            <PhaserGame ref={phaserRef} currentActiveScene={currentScene} />
-            <div>
-                <div>
-                    <button className="button" onClick={changeScene}>Change Scene</button>
+            <aside className="game-panel">
+                <div className="brand-row">
+                    <div>
+                        <p className="eyebrow">Phaser 4 + React</p>
+                        <h1>Golden Harvest</h1>
+                    </div>
+                    <div className="scene-chip">
+                        <span className="scene-dot"></span>
+                        {sceneLabel}
+                    </div>
                 </div>
-                <div>
-                    <button disabled={canMoveSprite} className="button" onClick={moveSprite}>Toggle Movement</button>
+
+                <div className="icon-strip">
+                    <div className="icon-card">
+                        <span className="icon-badge">⏱</span>
+                        <div>
+                            <strong>20s</strong>
+                            <small>run</small>
+                        </div>
+                    </div>
+                    <div className="icon-card">
+                        <span className="icon-badge">➜</span>
+                        <div>
+                            <strong>auto</strong>
+                            <small>scroll</small>
+                        </div>
+                    </div>
+                    <div className="icon-card">
+                        <span className="icon-badge">↕</span>
+                        <div>
+                            <strong>haut / bas</strong>
+                            <small>pilotage</small>
+                        </div>
+                    </div>
+                    <div className="icon-card">
+                        <span className="icon-badge">🛒</span>
+                        <div>
+                            <strong>shop</strong>
+                            <small>upgrades</small>
+                        </div>
+                    </div>
                 </div>
-                <div className="spritePosition">Sprite Position:
-                    <pre>{`{\n  x: ${spritePosition.x}\n  y: ${spritePosition.y}\n}`}</pre>
+
+                <div className="panel-grid">
+                    <div className="panel-block compact">
+                        <span className="block-icon">🎮</span>
+                        <div>
+                            <h2>Input</h2>
+                            <p>↑ ↓ / Z W S</p>
+                        </div>
+                    </div>
+                    <div className="panel-block compact">
+                        <span className="block-icon">🌾</span>
+                        <div>
+                            <h2>But</h2>
+                            <p>suivre les vagues</p>
+                        </div>
+                    </div>
+                    <div className="panel-block compact">
+                        <span className="block-icon">✂</span>
+                        <div>
+                            <h2>Fauchage</h2>
+                            <p>auto a portee</p>
+                        </div>
+                    </div>
+                    <div className="panel-block compact">
+                        <span className="block-icon">✦</span>
+                        <div>
+                            <h2>Loop</h2>
+                            <p>run &gt; bilan &gt; shop</p>
+                        </div>
+                    </div>
                 </div>
-                <div>
-                    <button className="button" onClick={addSprite}>Add New Sprite</button>
-                </div>
-            </div>
+            </aside>
+            <main className="game-shell">
+                <PhaserGame currentActiveScene={(scene) => setActiveSceneKey(scene.scene.key)} />
+            </main>
         </div>
-    )
+    );
 }
 
-export default App
+export default App;

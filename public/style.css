@@ -1,48 +1,216 @@
 body {
     margin: 0;
     padding: 0;
-    color: rgba(255, 255, 255, 0.87);
-    background-color: #000000; 
+    color: #f8f1db;
+    background:
+        radial-gradient(circle at top, #3f6b33 0%, #21381f 38%, #121a14 100%);
     font-family: Arial, Helvetica, sans-serif;
 }
 
 #app {
+    box-sizing: border-box;
     width: 100%;
+    min-height: 100vh;
+    padding: 28px;
     height: 100vh;
-    overflow: hidden;
+    overflow: auto;
     display: flex;
     justify-content: center;
     align-items: center;
+    gap: 24px;
 }
 
-.spritePosition {
-    margin: 10px 0 0 10px;
-    font-size: 0.8em;
+.game-panel {
+    width: 360px;
+    padding: 24px;
+    border: 1px solid rgba(247, 211, 84, 0.35);
+    border-radius: 24px;
+    background: rgba(10, 18, 12, 0.72);
+    box-shadow: 0 18px 50px rgba(0, 0, 0, 0.35);
 }
 
-.button {
-    width: 140px;
-    margin: 10px;
-    padding: 10px;
-    background-color: #000000;
-    color: rgba(255, 255, 255, 0.87);
-    border: 1px solid rgba(255, 255, 255, 0.87);
-    cursor: pointer;
-    transition: all 0.3s;
+.brand-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 16px;
+}
 
-    &:hover {
-        border: 1px solid #0ec3c9;
-        color: #0ec3c9;
+.game-panel h1 {
+    margin: 0;
+    font-size: 2.45rem;
+    line-height: 1;
+}
+
+.eyebrow {
+    margin: 0 0 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    font-size: 0.75rem;
+    color: #f7d354;
+}
+
+.panel-block {
+    margin-bottom: 18px;
+    padding: 16px 18px;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.panel-block h2 {
+    margin: 0 0 8px;
+    font-size: 1rem;
+}
+
+.panel-block p {
+    margin: 0;
+    line-height: 1.55;
+    color: rgba(248, 241, 219, 0.82);
+}
+
+.panel-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.panel-block.compact {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 0;
+    min-height: 92px;
+}
+
+.block-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 14px;
+    background: rgba(247, 211, 84, 0.14);
+    font-size: 1.3rem;
+}
+
+.panel-block.compact h2 {
+    margin-bottom: 4px;
+}
+
+.panel-block.compact p {
+    font-size: 0.92rem;
+}
+
+.icon-strip {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    margin-bottom: 18px;
+}
+
+.icon-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.icon-card strong,
+.icon-card small {
+    display: block;
+}
+
+.icon-card strong {
+    font-size: 1rem;
+    text-transform: uppercase;
+    color: #fff5d1;
+}
+
+.icon-card small {
+    color: rgba(248, 241, 219, 0.72);
+    letter-spacing: 0.04em;
+}
+
+.icon-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 14px;
+    background: rgba(247, 211, 84, 0.16);
+    color: #ffe59c;
+    font-size: 1.15rem;
+}
+
+.scene-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 38px;
+    padding: 0 14px;
+    border-radius: 999px;
+    background: rgba(247, 211, 84, 0.18);
+    color: #ffe59c;
+    font-weight: 700;
+}
+
+.scene-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 999px;
+    background: #f7d354;
+    box-shadow: 0 0 10px rgba(247, 211, 84, 0.7);
+}
+
+.game-shell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 18px;
+    border-radius: 28px;
+    background: rgba(7, 12, 9, 0.58);
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.32);
+}
+
+#game-container {
+    width: 1024px;
+    height: 768px;
+    overflow: hidden;
+    border-radius: 20px;
+}
+
+#game-container canvas {
+    display: block;
+}
+
+@media (max-width: 1420px) {
+    #app {
+        flex-direction: column;
+        height: auto;
     }
 
-    &:active {
-        background-color: #0ec3c9;
+    .game-panel {
+        width: min(100%, 980px);
     }
 
-    /* Disabled styles */
-    &:disabled {
-        cursor: not-allowed;
-        border: 1px solid rgba(255, 255, 255, 0.3);
-        color: rgba(255, 255, 255, 0.3);
+    .game-shell {
+        width: min(100%, 1060px);
+    }
+
+    .icon-strip,
+    .panel-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 840px) {
+    .icon-strip,
+    .panel-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 }
